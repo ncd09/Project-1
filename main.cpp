@@ -24,6 +24,7 @@ public:
     Node* first;
     Node* last;
     SLL();
+    SLL(int key, string name);
     void init(int key, string name);
     Node* createNode(int key, string name);
     bool checkNode(Node* node);
@@ -46,6 +47,11 @@ public:
 SLL::SLL(){
     first = NULL;
     last = NULL;
+}
+SLL::SLL(int key, string name){
+    Node* node = new Node(key,name);
+    first = node;
+    last = node;
 }
 void SLL::init(int key, string name){
     Node* node = new Node(key,name);
