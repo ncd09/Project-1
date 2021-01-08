@@ -25,6 +25,7 @@ public:
     Node* last;
     SLL();
     SLL(int key, string name);
+    SLL(Node* first);
     void init(int key, string name);
     Node* createNode(int key, string name);
     bool checkNode(Node* node);
@@ -43,6 +44,9 @@ public:
     Node* part(Node* first, Node* last, Node** nfirst, Node** nlast);
     Node* recur(Node* first, Node* last);
     void quickSort();
+    void removeSpecial(int crite);
+    Node* mergeList(Node* first1, Node* first2);
+    Node* splitList(int pos);
 };
 SLL::SLL(){
     first = NULL;
@@ -52,6 +56,10 @@ SLL::SLL(int key, string name){
     Node* node = new Node(key,name);
     first = node;
     last = node;
+}
+SLL::SLL(Node* first){
+    this->first = first;
+    this->last = first;
 }
 void SLL::init(int key, string name){
     Node* node = new Node(key,name);
@@ -253,6 +261,54 @@ void SLL::selectionSort(){
         x = pmin->next;
     }
 }
+void SLL::removeSpecial(int crite){//remove nodes having key < crite
+    Node* curr = first;
+    while(curr != NULL){
+        if(curr->data->key < crite){
+            if(curr == first)
+                removeFirst();
+            else if(curr == last)
+                removeLast();
+            else{
+                Node* temp = first;
+                while(temp->next != curr)
+                    temp = temp->next;
+                temp->next = curr->next;
+                delete(curr);
+                curr = temp->next;
+            }
+        }
+        curr = curr->next;
+    }
+    cout << "Success\n" << endl;
+}
+typename SLL::Node* SLL::mergeList(Node* first1, Node* first2){
+    Node* curr = first1;
+    if(first1 != NULL && first2 != NULL){
+        while(curr->next != NULL)
+            curr = curr->next;
+        curr->next = first2;
+        return first1;
+    }else if(first1 == NULL)
+        return first2;
+    else
+        return first1;
+}
+typename SLL::Node* SLL::splitList(int pos){
+    Node* curr = first;
+    if(curr != NULL){
+        while(pos > 1 && curr->next != NULL){
+            curr = curr->next;
+            pos--;
+        }
+        if(pos == 1){
+            Node* newList = curr->next;
+            curr->next = NULL;
+            return newList;
+        }
+    }
+    return NULL;
+}
 int main()
 {
     SLL* a = new SLL();
@@ -261,7 +317,8 @@ int main()
     a->insertAtEnd(3,"c");
     a->insertAtBegin(4,"d");
     a->insertAtMiddle(5,"e",2);
-    a->searchSpecial(3);
+    SLL* newList = new SLL(a->splitList(3));
+    a->mergeList(a->first,newList->first);
     a->print();
     return 0;
 }
